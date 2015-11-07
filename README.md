@@ -66,9 +66,9 @@ public class MainActivity extends Activity implements DefaultHardwareBackBtnHand
 
 ## Usage
 
-Currently there following functionality available.
+Currently there following functionality available. All below functions return Promise , with proper error codes.
 
--getLocales
+- getLocales
 - speak(args)
 - isSpeaking
 - shutDown
@@ -84,8 +84,7 @@ var tts = require('react-native-android-speech')
 ```
 
 ### getLocales()
-Returns all avialbale langauges in android TTS. Currently it returns Langugage Name , you might need to find code from https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
-
+Returns all avialbale langauges from TTS make sure that exists in device also.
 
 ## Example 
 
@@ -93,22 +92,25 @@ Returns all avialbale langauges in android TTS. Currently it returns Langugage N
 tts.getLocales().then(locales=>{
     console.log(locales)
 });
+
 ```
-## Example 
+
 ### speak()
 
 ## Example
 
 ```js
 tts.speak({
-    text:'Please provide some text to speak.',
-    pitch:1.5, //Optional Parameter to set the speed of Speech,
+    text:'Please provide some text to speak.', // Mandatory
+    pitch:1.5, // Optional Parameter to set the pitch of Speech,
     forceStop : false , //  Optional Parameter if true , it will stop TTS if it is already in process
-    language : 'en' // Default is EN you can provide any supported lang by TTS
-
+    language : 'en' // Optional Paramenter Default is en you can provide any supported lang by TTS
 }).then(isSpeaking=>{
     //Success Callback
     console.log(isSpeaking);
+}).catch(error=>{
+    //Errror Callback
+    console.log(error)
 });
 
 ```
@@ -120,9 +122,14 @@ This method will help to figure out wheter TTS engine is currently speaking or n
 ## Example
 
 ```js
-tts.isSpeaking().then(isSpeaking=>{
+tts.isSpeaking()
+.then(isSpeaking=>{
     //Callback
     console.log(isSpeaking);
+})
+.catch(error=>{
+    //if it fails 
+    console.log(error)
 });
 
 ```
@@ -134,9 +141,12 @@ Stop currently processing speech. Return True/False
 ## Example
 
 ```js
-tts.shutDown().then(stop=>{
-    //Callback 
-    console.log(stop);
+tts.shutDown()
+.then(isStopped=>{
+    console.log(isStopped);
+})
+.catch(error=>{
+    console.log(error);
 });
 
 ```
@@ -148,9 +158,13 @@ Shutdown TTS Engine
 ## Example
 
 ```js
-tts.shutDown().then(shutDown=>{
+tts.shutDown()
+.then(shutDown=>{
     //Callback 
     console.log(shutDown);
+})
+.catch(error=>{
+    console.log(error)
 });
 
 ```
@@ -158,9 +172,13 @@ tts.shutDown().then(shutDown=>{
 ## Changes
 PR's are welcome
 
-## Credits
-* [React Native](https://facebook.github.io/react-native/) - Awesome software.
-* [React Native Android Badge](https://github.com/jhen0409/react-native-android-badge) - For showing me the light with regards to the gradle build system, as applied to react native
+## Todo 
+
+* [ ]  providing UternceId and callback
+* [ ]  Differnt Voices
+* [ ]  Custome Engines 
+* [ ]  Support Speech To Text
+
 
 ## LICENSE
 
