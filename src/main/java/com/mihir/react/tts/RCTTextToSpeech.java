@@ -1,7 +1,10 @@
 package com.mihir.react.tts;
 
 
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.speech.tts.TextToSpeech;
+
 
 import com.facebook.common.logging.FLog;
 import com.facebook.react.bridge.Arguments;
@@ -24,6 +27,7 @@ import java.util.Set;
 public class RCTTextToSpeech extends  ReactContextBaseJavaModule{
 
     private static TextToSpeech tts;
+    private int MY_DATA_CHECK_CODE = 0;
 
     public RCTTextToSpeech(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -35,7 +39,6 @@ public class RCTTextToSpeech extends  ReactContextBaseJavaModule{
      */
     @ReactMethod
     public void getLocale(final Callback callback) {
-        FLog.i(ReactConstants.TAG, "Got the locales now trying to return ");
         new GuardedAsyncTask<Void, Void>(getReactApplicationContext()) {
             @Override
             protected void doInBackgroundGuarded(Void... params) {
@@ -43,10 +46,13 @@ public class RCTTextToSpeech extends  ReactContextBaseJavaModule{
                     if(tts == null){
                         init();
                     }
-                    Set<Locale> availableLanguages = tts.getAvailableLanguages();
+                    Locale[] locales = Locale.getAvailableLocales();
                     WritableArray data = Arguments.createArray();
-                    for (Locale locale : availableLanguages) {
-                        data.pushString(locale.getDisplayLanguage());
+                    for (Locale locale : locales) {
+                        int res = tts.isLanguageAvailable(locale);
+                        if(res == TextToSpeech.LANG_COUNTRY_AVAILABLE){
+                            data.pushString(locale.getLanguage());
+                        }
                     }
                     callback.invoke(null,data);
                 } catch (Exception e) {
@@ -132,6 +138,7 @@ public class RCTTextToSpeech extends  ReactContextBaseJavaModule{
                 String language = args.hasKey("language") ? args.getString("language") : null;
                 Boolean forceStop = args.hasKey("forceStop") ?  args.getBoolean("forceStop") : null;
                 Float pitch = args.hasKey("pitch") ? (float)  args.getDouble("pitch") : null;
+
                 if(tts.isSpeaking()){
                     //Force to stop and start new speech
                     if(forceStop != null && forceStop){
@@ -155,7 +162,11 @@ public class RCTTextToSpeech extends  ReactContextBaseJavaModule{
                     if(pitch != null){
                         tts.setPitch(pitch);
                     }
-                    tts.speak(text, TextToSpeech.QUEUE_FLUSH, null,null);
+                    //TODO:: Need to implement the UTTERANCE Id and give the callback
+                    if(Build.VERSION.SDK_INT >= 21)
+                        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null,null);
+                    else
+                        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
                     callback.invoke(true);
                 } catch (Exception e) {
                     callback.invoke(false);
