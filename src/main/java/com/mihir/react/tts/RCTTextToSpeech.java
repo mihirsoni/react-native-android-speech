@@ -27,7 +27,6 @@ import java.util.Set;
 public class RCTTextToSpeech extends  ReactContextBaseJavaModule{
 
     private static TextToSpeech tts;
-    private int MY_DATA_CHECK_CODE = 0;
 
     public RCTTextToSpeech(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -56,21 +55,25 @@ public class RCTTextToSpeech extends  ReactContextBaseJavaModule{
                     }
                     callback.invoke(null,data);
                 } catch (Exception e) {
-                    callback.invoke(e,null);
+                    callback.invoke(ErrorUtils.getError(null,e.getMessage()),null);
                 }
             }
         }.execute();
     }
 
     @ReactMethod
-    public void isSpeaking(final Callback successCallback){
+    public void isSpeaking(final Callback callback){
         new GuardedAsyncTask<Void,Void>(getReactApplicationContext()){
             @Override
             protected  void doInBackgroundGuarded(Void... params){
-                if(tts.isSpeaking()){
-                    successCallback.invoke(true);
-                } else {
-                    successCallback.invoke(false);
+                try {
+                    if (tts.isSpeaking()) {
+                        callback.invoke(null,true);
+                    } else {
+                        callback.invoke(null,false);
+                    }
+                } catch (Exception e){
+                    callback.invoke(ErrorUtils.getError(null,e.getMessage()),null);
                 }
             }
         }.execute();
@@ -87,17 +90,16 @@ public class RCTTextToSpeech extends  ReactContextBaseJavaModule{
     }
 
     @ReactMethod
-    public void stop(final Callback successCallback){
+    public void stop(final Callback callback){
         new GuardedAsyncTask<Void,Void>(getReactApplicationContext()){
             @Override
             protected  void doInBackgroundGuarded(Void... params){
                 try{
                     tts.stop();
-                    successCallback.invoke(true);
+                    callback.invoke(null,true);
 
                 } catch (Exception e){
-                    tts.stop();
-                    successCallback.invoke(e);
+                    callback.invoke(ErrorUtils.getError(null,e.getMessage()),null);
                 }
             }
         }.execute();
@@ -113,9 +115,9 @@ public class RCTTextToSpeech extends  ReactContextBaseJavaModule{
                 }
                 try{
                     tts.shutdown();
-                    callBack.invoke(true);
+                    callBack.invoke(null,true);
                 } catch (Exception e){
-                    callBack.invoke(e);
+                    callBack.invoke(ErrorUtils.getError(null,e.getMessage()),null);
                 }
             }
         }.execute();
@@ -138,18 +140,18 @@ public class RCTTextToSpeech extends  ReactContextBaseJavaModule{
                 String language = args.hasKey("language") ? args.getString("language") : null;
                 Boolean forceStop = args.hasKey("forceStop") ?  args.getBoolean("forceStop") : null;
                 Float pitch = args.hasKey("pitch") ? (float)  args.getDouble("pitch") : null;
-
                 if(tts.isSpeaking()){
                     //Force to stop and start new speech
                     if(forceStop != null && forceStop){
                         tts.stop();
                     } else {
-                        callback.invoke("TTS is already speaking something , Please shutdown or stop  TTS and try again");
+                        callback.invoke(ErrorUtils.getError(null,"TTS is already speaking something , Please shutdown or stop  TTS and try again"),null);
                         return;
                     }
                 }
                 if(args.getString("text") == null || text == ""){
-                    callback.invoke("Text can not be blank");
+                    callback.invoke(ErrorUtils.getError(null,"t can not be blank"),null);
+                    return;
                 }
                 try {
                     if (language != null && language != "") {
@@ -167,9 +169,9 @@ public class RCTTextToSpeech extends  ReactContextBaseJavaModule{
                         tts.speak(text, TextToSpeech.QUEUE_FLUSH, null,null);
                     else
                         tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
-                    callback.invoke(true);
+                    callback.invoke(null,true);
                 } catch (Exception e) {
-                    callback.invoke(false);
+                    callback.invoke(ErrorUtils.getError(null,e.getMessage()),null);
                 }
             }
         }.execute();
