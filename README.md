@@ -90,9 +90,9 @@ Returns all avialbale langauges in android TTS. Currently it returns Langugage N
 ## Example 
 
 ```js
-tts.getLocales(locales=>{
+tts.getLocales().then(locales=>{
     console.log(locales)
-})
+});
 ```
 ## Example 
 ### speak()
@@ -120,7 +120,7 @@ This method will help to figure out wheter TTS engine is currently speaking or n
 ## Example
 
 ```js
-tts.isSpeakig().then(isSpeaking=>{
+tts.isSpeaking().then(isSpeaking=>{
     //Callback
     console.log(isSpeaking);
 });

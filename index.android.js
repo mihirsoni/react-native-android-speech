@@ -32,14 +32,14 @@ var RNAndroidTTS = {
     })
   },
   shutDown(){
-  	return new Promise(resolve,reject) => {
+  	return new Promise((resolve,reject) => {
   		AndroidTTS.shutDown((result)=>{
   			resolve(result)
   		});
   	});
   },
   stop(){
-  	return new Promise(resolve,reject) => {
+  	return new Promise((resolve,reject) => {
   		AndroidTTS.stop((result)=>{
   			resolve(result)
   		});
