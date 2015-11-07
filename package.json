@@ -1,0 +1,37 @@
+{
+  "name": "react-native-android-speech",
+  "version": "1.0.0",
+  "description": "This is simple module for React Native for Android Text to Speech Engine",
+  "main": "index.android.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mihirsoni/react-native-android-speech.git"
+  },
+  "keywords": [
+    "React",
+    "Native",
+    "Android",
+    "TTS",
+    "Text",
+    "To",
+    "speech"
+  ],
+  "author": {
+    "name": "Mihir Soni",
+    "email": "mihirsoni.123@gmail.com",
+    "url": "http://mihir.pro"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mihirsoni/react-native-android-speech/issues"
+  },
+  "homepage": "https://github.com/mihirsoni/react-native-android-speech#readme",
+  "gitHead": "27811ef187ef931ddef014729e78faee4639f3dd",
+  "readme": "ERROR: No README data found!",
+  "_id": "react-native-android-speech@1.0.0",
+  "_shasum": "3373398dc0134b00da79961c6d5b09b068ef85c6",
+  "_from": "react-native-android-speech@*"
+}
