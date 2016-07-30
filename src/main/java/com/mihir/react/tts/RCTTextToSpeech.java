@@ -165,10 +165,15 @@ public class RCTTextToSpeech extends  ReactContextBaseJavaModule{
                         tts.setPitch(pitch);
                     }
                     //TODO:: Need to implement the UTTERANCE Id and give the callback
+                    int speakResult = 0;
                     if(Build.VERSION.SDK_INT >= 21)
-                        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null,null);
+                        speakResult = tts.speak(text, TextToSpeech.QUEUE_FLUSH, null,null);
                     else
-                        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+                        speakResult = tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+
+                    if(speakResult < 0)
+                        throw new Exception("Speak failed, make sure that TTS service is installed on you device");
+
                     callback.invoke(null,true);
                 } catch (Exception e) {
                     callback.invoke(ErrorUtils.getError(null,e.getMessage()),null);
