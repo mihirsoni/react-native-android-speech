@@ -1,6 +1,6 @@
 {
   "name": "react-native-android-speech",
-  "version": "0.0.2",
+  "version": "0.0.6",
   "description": "This is simple module for React Native for Android Text to Speech Engine",
   "main": "index.android.js",
   "scripts": {
@@ -11,6 +11,8 @@
     "url": "git+https://github.com/mihirsoni/react-native-android-speech.git"
   },
   "keywords": [
+    "react-native",
+    "react-component",
     "React",
     "Native",
     "Android",
