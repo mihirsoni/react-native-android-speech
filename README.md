@@ -13,7 +13,7 @@ But with help of exposing module in react-native , this wrapper will solve the p
 * Install Module
 
 ```bash
-npm install --save-dev react-native-android-speech
+npm install --save react-native-android-speech
 ```
 
 * `android/settings.gradle`
