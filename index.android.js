@@ -1,4 +1,4 @@
-/* 
+/*
 * @Author: mihir
 * @Date:   2015-11-07
 * @Last Modified by:   mihir
@@ -10,48 +10,48 @@
 var AndroidTTS = require('react-native').NativeModules.AndroidTTS;
 var RNAndroidTTS = {
   speak(args) {
-    return new Promise((resolve, reject) => { 
-      AndroidTTS.speak(args, (error,result) =>{
+    return new Promise((resolve, reject) => {
+      AndroidTTS.speak(args, (error,result) => {
           if (error) {
             reject(error);
           } else {
-          	resolve(result);
+            resolve(result);
           }
         });
     });
   },
-  isSpeaking(){
+  isSpeaking() {
     return new Promise((resolve,reject) => {
       AndroidTTS.isSpeaking((error,result) => {
-      	if(error) {
-      		reject(error)
-      	} else {
-      		resolve(result);	
-      	}
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result);
+        }
       });
     })
   },
-  shutDown(){
-  	return new Promise((resolve,reject) => {
-  		AndroidTTS.shutDown((error,result)=>{
-  			if(error) {
-      			reject(error)
-      		} else {
-      			resolve(result);	
-      		}
-  		});
-  	});
+  shutDown() {
+    return new Promise((resolve,reject) => {
+      AndroidTTS.shutDown((error,result)=>{
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result);
+        }
+      });
+    });
   },
   stop(){
-  	return new Promise((resolve,reject) => {
-  		AndroidTTS.stop((error,result)=>{
-  			if(error) {
-      			reject(error)
-      		} else {
-      			resolve(result);	
-      		}
-  		});
-  	});
+    return new Promise((resolve,reject) => {
+      AndroidTTS.stop((error,result)=>{
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result);
+        }
+      });
+    });
   },
   getLocales() {
     return new Promise((resolve, reject) => {
@@ -59,11 +59,10 @@ var RNAndroidTTS = {
         if (error) {
            reject(error);
         } else {
-        	resolve(results);	
+          resolve(results);
         }
-        
       });
     });
   }
-} 
+}
 module.exports = RNAndroidTTS;
