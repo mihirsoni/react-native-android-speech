@@ -1,9 +1,11 @@
 package com.mihir.react.tts;
 
-
 import android.annotation.TargetApi;
 import android.os.Build;
+import android.os.Bundle;
+import android.speech.tts.TextToSpeech.Engine;
 import android.speech.tts.TextToSpeech;
+import android.speech.tts.UtteranceProgressListener;
 
 
 import com.facebook.common.logging.FLog;
@@ -15,16 +17,21 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableArray;
+import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.common.ReactConstants;
+import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEmitter;
 
+
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Set;
+import java.util.UUID;
 
 
 /**
  * Created by mihir on 11/4/15.
  */
-public class RCTTextToSpeech extends  ReactContextBaseJavaModule{
+public class RCTTextToSpeech extends ReactContextBaseJavaModule{
 
     private static TextToSpeech tts;
 
@@ -85,6 +92,31 @@ public class RCTTextToSpeech extends  ReactContextBaseJavaModule{
                 if(status == TextToSpeech.ERROR){
                     FLog.e(ReactConstants.TAG,"Not able to initialized the TTS object");
                 }
+            }
+        });
+        tts.setOnUtteranceProgressListener(new UtteranceProgressListener() {
+            @Override
+            public void onDone(String utteranceId) {
+                WritableMap map = Arguments.createMap();
+                map.putString("utteranceId", utteranceId);
+                getReactApplicationContext().getJSModule(RCTDeviceEventEmitter.class)
+                    .emit("FinishSpeechUtterance", map);
+            }
+
+            @Override
+            public void onError(String utteranceId) {
+                WritableMap map = Arguments.createMap();
+                map.putString("utteranceId", utteranceId);
+                getReactApplicationContext().getJSModule(RCTDeviceEventEmitter.class)
+                    .emit("ErrorSpeechUtterance", map);
+            }
+
+            @Override
+            public void onStart(String utteranceId) {
+                WritableMap map = Arguments.createMap();
+                map.putString("utteranceId", utteranceId);
+                getReactApplicationContext().getJSModule(RCTDeviceEventEmitter.class)
+                    .emit("StartSpeechUtterance", map);
             }
         });
     }
@@ -164,12 +196,17 @@ public class RCTTextToSpeech extends  ReactContextBaseJavaModule{
                     if(pitch != null){
                         tts.setPitch(pitch);
                     }
-                    //TODO:: Need to implement the UTTERANCE Id and give the callback
+                    //TODO:: Need to give the callback
                     int speakResult = 0;
-                    if(Build.VERSION.SDK_INT >= 21)
-                        speakResult = tts.speak(text, TextToSpeech.QUEUE_FLUSH, null,null);
-                    else
-                        speakResult = tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+                    if(Build.VERSION.SDK_INT >= 21) {
+                        Bundle bundle = new Bundle();
+                        bundle.putCharSequence(Engine.KEY_PARAM_UTTERANCE_ID, "");
+                        speakResult = tts.speak(text, TextToSpeech.QUEUE_FLUSH, bundle, UUID.randomUUID().toString());
+                    } else {
+                        HashMap<String, String> map = new HashMap<String, String>();
+                        map.put(Engine.KEY_PARAM_UTTERANCE_ID, UUID.randomUUID().toString());
+                        speakResult = tts.speak(text, TextToSpeech.QUEUE_FLUSH, map);
+                    }
 
                     if(speakResult < 0)
                         throw new Exception("Speak failed, make sure that TTS service is installed on you device");
