@@ -104,7 +104,8 @@ tts.speak({
     text:'Please provide some text to speak.', // Mandatory
     pitch:1.5, // Optional Parameter to set the pitch of Speech,
     forceStop : false , //  Optional Parameter if true , it will stop TTS if it is already in process
-    language : 'en' // Optional Paramenter Default is en you can provide any supported lang by TTS
+    language : 'en', // Optional Paramenter Default is en you can provide any supported lang by TTS
+    country : 'US' // Optional Paramenter Default is null, it provoques that system selects its default
 }).then(isSpeaking=>{
     //Success Callback
     console.log(isSpeaking);

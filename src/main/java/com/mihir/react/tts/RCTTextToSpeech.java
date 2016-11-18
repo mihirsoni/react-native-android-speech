@@ -171,6 +171,7 @@ public class RCTTextToSpeech extends ReactContextBaseJavaModule{
                 String text = args.hasKey("text") ? args.getString("text") : null;
                 String language = args.hasKey("language") ? args.getString("language") : null;
                 Boolean forceStop = args.hasKey("forceStop") ?  args.getBoolean("forceStop") : null;
+                String country = args.hasKey("country") ? args.getString("country") : null;
                 Float pitch = args.hasKey("pitch") ? (float)  args.getDouble("pitch") : null;
                 if(tts.isSpeaking()){
                     //Force to stop and start new speech
@@ -187,7 +188,11 @@ public class RCTTextToSpeech extends ReactContextBaseJavaModule{
                 }
                 try {
                     if (language != null && language != "") {
-                        tts.setLanguage(new Locale(language));
+                        if (country != null && country != "") {
+                            tts.setLanguage(new Locale(language,country));
+                        }else {
+                            tts.setLanguage(new Locale(language));
+                        }
                     } else {
                         //Setting up default language
                         tts.setLanguage(new Locale("en"));
