@@ -63,6 +63,28 @@ var RNAndroidTTS = {
         }
       });
     });
+  },
+  checkLanguageAvailability(language) {
+    return new Promise((resolve,reject) => {
+      AndroidTTS.checkLanguageAvailability(language, (error,result) => {
+        if (error) {
+          reject(error)
+        } else {
+          resolve(result);
+        }
+      });
+    })
+  },
+  downloadTTSVoice() {
+    return new Promise((resolve, reject) => {
+      AndroidTTS.downloadTTSVoice((error, results) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(results);
+        }
+      });
+    });
   }
 }
 module.exports = RNAndroidTTS;

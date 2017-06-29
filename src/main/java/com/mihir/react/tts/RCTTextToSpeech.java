@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.speech.tts.TextToSpeech.Engine;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
+import android.content.Intent;
 
 
 import com.facebook.common.logging.FLog;
@@ -160,6 +161,43 @@ public class RCTTextToSpeech extends ReactContextBaseJavaModule{
         return "AndroidTTS";
     }
 
+    private Boolean isLanguageAvailable(String language) throws Exception{
+        if(language == null || language == ""){
+            throw new Exception("language code cannot be blank");
+        }
+        return tts.isLanguageAvailable(new Locale(language)) == TextToSpeech.LANG_AVAILABLE;
+    }
+
+    /***
+     * This method returns whether a language is available on the device TTS engine
+     * @param language - language code to look up
+     * @param callback
+     */
+    @ReactMethod
+    public void checkLanguageAvailability(final String language,final Callback callback){
+        try{
+            callback.invoke(null,isLanguageAvailable(language));
+        } catch (Exception e) {
+            callback.invoke(ErrorUtils.getError(null,e.getMessage()),null);
+        }
+    }
+
+    /***
+     * This method opens up TTS download page on the device
+     * @param callback
+     */
+    @ReactMethod
+    public void downloadTTSVoice(final Callback callback){
+        try{
+            Intent installIntent = new Intent();
+            installIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            installIntent.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
+            getReactApplicationContext().startActivity(installIntent);
+        } catch (Exception e){
+            callback.invoke(ErrorUtils.getError(null,e.getMessage()),null);
+        }
+    }
+
     @ReactMethod
     public void speak(final ReadableMap args,final  Callback callback) {
         new GuardedAsyncTask<Void, Void>(getReactApplicationContext()) {
@@ -183,19 +221,24 @@ public class RCTTextToSpeech extends ReactContextBaseJavaModule{
                     }
                 }
                 if(args.getString("text") == null || text == ""){
-                    callback.invoke(ErrorUtils.getError(null,"t can not be blank"),null);
+                    callback.invoke(ErrorUtils.getError(null,"t cannot be blank"),null);
                     return;
                 }
+                // Setting up default language
+                if (language == null || language == "") {
+                  language = "en";
+                }
                 try {
-                    if (language != null && language != "") {
-                        if (country != null && country != "") {
-                            tts.setLanguage(new Locale(language,country));
-                        }else {
-                            tts.setLanguage(new Locale(language));
-                        }
-                    } else {
-                        //Setting up default language
-                        tts.setLanguage(new Locale("en"));
+                    //Check if the language is available on the device
+                    if(!isLanguageAvailable(language)){
+                        callback.invoke(ErrorUtils.getError(null,"ERROR: TTS voice for "+language+" is not available on this device"),null);
+                        return;
+                    }
+                    //Set the language, with country if available
+                    if (country != null && country != "") {
+                        tts.setLanguage(new Locale(language,country));
+                    }else {
+                        tts.setLanguage(new Locale(language));
                     }
                     //Set the pitch if provided by the user
                     if(pitch != null){
@@ -214,7 +257,7 @@ public class RCTTextToSpeech extends ReactContextBaseJavaModule{
                     }
 
                     if(speakResult < 0)
-                        throw new Exception("Speak failed, make sure that TTS service is installed on you device");
+                        throw new Exception("Speak failed, make sure that TTS service is installed on your device");
 
                     callback.invoke(null,true);
                 } catch (Exception e) {

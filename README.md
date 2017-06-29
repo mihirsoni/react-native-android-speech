@@ -69,11 +69,12 @@ public class MainActivity extends Activity implements DefaultHardwareBackBtnHand
 Currently there following functionality available. All below functions return Promise , with proper error codes.
 
 - getLocales
+- checkLanguageAvailability(language)
+- downloadTTSVoice()
 - speak(args)
 - isSpeaking
 - shutDown
 - stop
-
 
 ### Importing module
 
@@ -84,13 +85,39 @@ var tts = require('react-native-android-speech')
 ```
 
 ### getLocales()
-Returns all avialbale langauges from TTS make sure that exists in device also.
+Returns all available langauges from TTS make sure that exists in device also.
 
 ## Example 
 
 ```js
 tts.getLocales().then(locales=>{
     console.log(locales)
+});
+
+```
+
+### checkLanguageAvailability(language)
+returns whether a language is available on the device TTS engine
+
+## Example 
+
+```js
+tts.checkLanguageAvailability('ko').then(result => {
+    console.log('TTS voice availability for Korean is '+result);
+});
+
+```
+
+### downloadTTSVoice()
+opens the TTS download page on the device
+
+## Example 
+
+```js
+tts.checkLanguageAvailability('ko').then(result => {
+    if (!result) {
+        downloadTTSVoice();
+    }
 });
 
 ```
@@ -118,7 +145,7 @@ tts.speak({
 
 ### isSpeaking()
 
-This method will help to figure out wheter TTS engine is currently speaking or not.
+This method will help to figure out whether TTS engine is currently speaking or not.
 
 ## Example
 
