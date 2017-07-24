@@ -1,4 +1,4 @@
-React Native Android Text Top Speech
+React Native Android Text To Speech
 
 A react native android wrapper for Text To speech
 
@@ -32,8 +32,25 @@ dependencies {
 	compile project(':react-native-android-speech')
 }
 ```
+* for React Native Version >= 0.29, register module (in android/app/src/main/java/com/[app name]/MainApplication.java)
+```java
+...
+import com.mihir.react.tts.*; // Import package
 
-* register module (in MainActivity.java)
+public class MainApplication extends Application implements ReactApplication {
+	...
+	
+    @Override
+    protected List<ReactPackage> getPackages() {
+      return Arrays.<ReactPackage>asList(
+          ...,
+          new RCTTextToSpeechModule()
+      );
+    }
+}
+```
+
+* for React Native Version < 0.29, register module (in android/app/src/main/java/com/[app name]/MainActivity.java)
 
 ```java
 ...
@@ -60,7 +77,7 @@ public class MainActivity extends Activity implements DefaultHardwareBackBtnHand
         mReactRootView.startReactApplication(mReactInstanceManager, "YourProject", null);
 
         setContentView(mReactRootView);
-    }	
+    }
 }
 ```
 
